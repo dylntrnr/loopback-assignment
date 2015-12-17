@@ -1,0 +1,51 @@
+{
+  "name": "user",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "hidden": [
+    "verificationToken",
+    "random"
+  ],
+  "properties": {
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "username": {
+      "type": "string",
+      "required": true
+    },
+    "random": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accessTokens": {
+      "type": "hasMany",
+      "model": "AccessToken",
+      "foreignKey": "userId",
+      "options": {
+        "disableInclude": true
+      }
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {
+    "rotate": {
+      "isStatic": false,
+      "http": {
+        "verb": "post"
+      }
+    }
+  }
+}

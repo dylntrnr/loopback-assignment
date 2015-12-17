@@ -1,0 +1,32 @@
+{
+  "name": "loopback-assignment",
+  "version": "1.0.0",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "NODE_ENV=test node ./node_modules/.bin/_mocha"
+  },
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "loopback": "^2.22.0",
+    "loopback-boot": "^2.6.5",
+    "loopback-component-explorer": "^2.1.0",
+    "loopback-datasource-juggler": "^2.39.0",
+    "serve-favicon": "^2.0.1",
+    "slug": "^0.9.1"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "chance": "^0.8.0",
+    "mocha": "^2.3.4",
+    "supertest": "^1.1.0",
+    "supertest-as-promised": "^2.0.2"
+  },
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "description": "loopback-assignment"
+}

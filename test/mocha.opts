@@ -1,0 +1,5 @@
+--ui bdd
+--recursive test/e2e
+--timeout 20000
+--growl
+-R spec
