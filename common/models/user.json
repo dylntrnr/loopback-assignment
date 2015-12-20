@@ -46,12 +46,6 @@
       "http": {
         "verb": "post"
       }
-    },
-    "inputValidator": {
-      "isStatic": false,
-      "http": {
-        "verb": "post"
-      }
     }
   }
 }
