@@ -14,7 +14,12 @@ module.exports = function(User) {
     return this.save();
   };
 
-  User.prototype.inputValidator = function() {
-
+  User.inputValidator = function(email) {
+    return User.findOne({
+      where: {email: email},
+      fields: {id: true}
+    }).then(function(user) {
+      return {'unique': !user};
+    });
   };
 };
