@@ -22,17 +22,71 @@ function createUser() {
   });
 }
 
+function getUserObj() {
+  return {
+    email: chance.email(),
+    password: chance.word(),
+    username: chance.word()
+  };
+}
+
 describe('user', function() {
   describe('POST /api/users', function() {
     beforeEach(clearDB);
-    it('should create user');
-    it('should return error when missing email');
-    it('should return error when email not unique');
+    it('should create user', function() {
+      return request(app)
+      .post('/api/users')
+      .send(getUserObj())
+      .expect(200)
+      .then(function(res) {
+        expect(res.body.email).to.be.a('string');
+      });
+    });
+    it('should return error when missing email', function() {
+      return request(app)
+      .post('/api/users')
+      .send({
+           password: chance.word(),
+           username: chance.word()
+      })
+      .expect(422);
+    });
+    it('should return error when email not unique', function() {
+      return request(app)
+      .post('/api/users')
+      .send({
+           email: 'dylan@doxy.me',
+           password: chance.word(),
+           username: chance.word()
+      })
+      .then(function() {
+        request(app)
+        .post('/api/users')
+        .send({
+             email: 'dylan@doxy.me',
+             password: chance.word(),
+             username: chance.word()
+        })
+        .expect(422);
+      });
+    });
     /*
      - use https://www.npmjs.com/package/slug
      - verify that user.username went through it
      */
-    it('should slugify username');
+    it('should slugify username', function() {
+      return request(app)
+      .post('/api/users')
+      .send({
+           email: chance.email(),
+           password: chance.word(),
+           username: 'i ♥ unicode'
+      })
+      .expect(200)
+      .then(function(res) {
+        expect(res.body.username).to.equal('i-love-unicode');
+      });
+    });
   });
   describe('POST /api/users/{id}/rotate', function() {
     var context = {};
@@ -51,11 +105,19 @@ describe('user', function() {
         .expect(204)
     });
     // TODO: verify that new random field is different than the old one
-    it('should change "random" field');
+    it('should change "random" field', function() {
+      var old = context.user.id;
+      return request(app)
+      .post('/api/users/' + context.user.id + '/rotate')
+      .set({'authorization': context.accessToken.id})
+      .then(function(res) {
+        expect(old).to.not.equal(res.body.id);
+      });
+    });
   });
   //TODO: implement remote method inputValidator
   //Remove .skip to run this test
-  describe.skip('POST /api/users/inputValidator', function() {
+  describe('POST /api/users/inputValidator', function() {
     var context = {};
     beforeEach(function() {
       return clearDB().then(createUser).then(function(user) {
