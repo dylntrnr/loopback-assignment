@@ -20,6 +20,9 @@
     },
     "random": {
       "type": "number"
+    },
+    "booksCounter": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -31,6 +34,12 @@
       "options": {
         "disableInclude": true
       }
+    },
+    "library": {
+      "type": "hasMany",
+      "model": "library",
+      "foreignKey": "libraryId",
+      "through": "book"
     }
   },
   "acls": [

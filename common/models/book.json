@@ -1,0 +1,29 @@
+{
+  "name": "book",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "library": {
+      "type": "belongsTo",
+      "model": "library",
+      "foreignKey": "libraryId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
