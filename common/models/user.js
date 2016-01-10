@@ -22,4 +22,5 @@ module.exports = function(User) {
       return {'unique': !user};
     });
   };
+
 };

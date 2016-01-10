@@ -22,6 +22,18 @@ function createUser() {
   });
 }
 
+function createBook() {
+  return app.models.book.create({
+    name: chance.word()
+  });
+}
+
+function createLibrary() {
+  return app.models.library.create({
+    name: chance.word()
+  });
+}
+
 function getUserObj() {
   return {
     email: chance.email(),
@@ -145,6 +157,56 @@ describe('user', function() {
         .then(function(res) {
           expect(res.body.email.unique).to.equal(true);
         });
+    });
+  });
+  // Implement hasManyThrough relation with library and books
+  describe('POST /api/users/{id}/library/rel/{fk}', function() {
+    var context = {};
+    beforeEach(function() {
+      return clearDB()
+      .then(createUser)
+      .then(function(user) {
+        context.user = user;
+        return user.createAccessToken(DEFAULT_TTL);
+      }).then(function(accessToken) {
+        context.accessToken = accessToken;
+      })
+      .then(createBook)
+      .then(function(book) {
+        context.book = book;
+      })
+      .then(createLibrary)
+      .then(function(library) {
+        context.library = library;
+      });
+    });
+    it('should return a library', function() {
+      return request(app)
+        .post('/api/libraries')
+        .send({name: context.library.name})
+        .expect(200)
+        .then(function(res) {
+          expect(res.body.name).to.be.a('string');
+        });
+    });
+    it('should return a book', function() {
+      return request(app)
+        .post('/api/books')
+        .send({name: context.book.name})
+        .expect(200)
+        .then(function(res) {
+          expect(res.body.name).to.be.a('string');
+      });
+    });
+    it('should create a relation between user and library', function() {
+      return request(app)
+      .put('/api/users/' + context.user.id + '/library/rel/' + context.library.id)
+      .set({'authorization': context.accessToken.id})
+      .send({name: context.book.name})
+      .expect(200)
+      .then(function(res) {
+        expect(res.body.name).to.equal(context.book.name);
+      });
     });
   });
 });
