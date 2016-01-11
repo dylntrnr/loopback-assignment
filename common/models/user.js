@@ -28,6 +28,10 @@ module.exports = function(User) {
     var user = ctx.req.remotingContext.instance;
     user.booksCounter +=1;
     next();
-
+  });
+  User.beforeRemote('prototype.__unlink__libraries', function(ctx, library, next) {
+    var user = ctx.req.remotingContext.instance;
+    user.booksCounter -=1;
+    next();
   });
 };
