@@ -12,7 +12,14 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "users": {
+      "type": "hasMany",
+      "model": "user",
+      "foreignKey": "libraryId",
+      "through": "book"
+    }
+  },
   "acls": [],
   "methods": {}
 }
