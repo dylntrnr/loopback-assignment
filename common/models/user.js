@@ -5,6 +5,7 @@ module.exports = function(User) {
   User.observe('before save', function(ctx, next) {
     var data = ctx.instance || ctx.data;
     data.username = slug(data.username);
+    data.booksCounter = data.booksCounter || 0;
     next();
   });
 
@@ -22,4 +23,11 @@ module.exports = function(User) {
       return {'unique': !user};
     });
   };
+
+  User.beforeRemote('prototype.__link__libraries', function(ctx, library, next) {
+    var user = ctx.req.remotingContext.instance;
+    user.booksCounter +=1;
+    next();
+
+  });
 };

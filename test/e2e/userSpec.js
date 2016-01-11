@@ -54,6 +54,15 @@ describe('user', function() {
         expect(res.body.email).to.be.a('string');
       });
     });
+    it('should return booksCounter = 0', function() {
+      return request(app)
+      .post('/api/users')
+      .send(getUserObj())
+      .expect(200)
+      .then(function(res) {
+        expect(res.body.booksCounter).to.be.a('number');
+      });
+    });
     it('should return error when missing email', function() {
       return request(app)
       .post('/api/users')
@@ -212,6 +221,21 @@ describe('user', function() {
         .then(function(res){
           expect(res.body.count).to.equal(1);
         });
+      });
+    });
+    it('should increase the booksCounter by 1', function() {
+      var counter = context.user.booksCounter;
+      return request(app)
+      .put('/api/users/' + context.user.id + '/libraries/rel/' + context.library.id)
+      .set({'authorization': context.accessToken.id})
+      .send({
+        name: context.book.name,
+        userId: context.user.id,
+        libraryId: context.library.id
+      })
+      .expect(200)
+      .then(function(res) {
+        expect(context.user.booksCounter).to.equal(counter + 1);
       });
     });
   });
