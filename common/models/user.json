@@ -31,6 +31,12 @@
       "options": {
         "disableInclude": true
       }
+    },
+    "libraries": {
+      "type": "hasMany",
+      "model": "library",
+      "foreignKey": "",
+      "through": "book"
     }
   },
   "acls": [
