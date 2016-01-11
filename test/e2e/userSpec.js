@@ -171,43 +171,46 @@ describe('user', function() {
       }).then(function(accessToken) {
         context.accessToken = accessToken;
       })
+      .then(createBook)
+      .then(function(book) {
+        context.book = book;
+      })
       .then(createLibrary)
       .then(function(library) {
         context.library = library;
       });
     });
-    it('should create a book when put', function() {
-      var bookName = chance.word();
+    it('should link user to book', function() {
       return request(app)
       .put('/api/users/' + context.user.id + '/libraries/rel/' + context.library.id)
       .set({'authorization': context.accessToken.id})
-      .send({name: bookName})
+      .send({
+        name: context.book.name,
+        userId: context.user.id,
+        libraryId: context.library.id
+      })
       .expect(200)
       .then(function(res) {
-        expect(res.body.name).to.equal(bookName);
+        expect(res.body.userId).to.equal(context.user.id);
       });
     });
-    it('should create two books with two puts', function() {
-      var bookName = chance.word();
-      var bookName2 = chance.word();
-      createBook(bookName2);
+    it('should increase the count by 1', function() {
       return request(app)
       .put('/api/users/' + context.user.id + '/libraries/rel/' + context.library.id)
       .set({'authorization': context.accessToken.id})
-      .send({name: bookName})
+      .send({
+        name: context.book.name,
+        userId: context.user.id,
+        libraryId: context.library.id
+      })
       .expect(200)
-      .then(function(){
+      .then(function() {
         return request(app)
-        .put('/api/users/' + context.user.id + '/libraries/rel/' + context.library.id)
+        .get('/api/users/' + context.user.id + '/libraries/count')
         .set({'authorization': context.accessToken.id})
-        .send({
-          name: bookName2,
-          userId: context.user.id,
-          libraryId: context.library.id
-        })
         .expect(200)
-        .then(function(res) {
-          expect(res.body.name).to.not.equal(bookName);
+        .then(function(res){
+          expect(res.body.count).to.equal(1);
         });
       });
     });
